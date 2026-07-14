@@ -56,7 +56,11 @@ Claude 데스크톱 앱이 최전면에 오면 플로팅 패널로 설치된 Cla
    - `~/.claude/plugins/installed_plugins.json`의 각 항목 `installPath/skills/*/SKILL.md`
      → 해당 플러그인명 카테고리
 3. 각 SKILL.md에서 YAML frontmatter(`---` 블록)의 `name`, `description` 두 키만 추출.
-   본문은 읽지 않는다. 정식 YAML 파서 불필요 — 단순 라인 파싱.
+   본문은 읽지 않는다. 정식 YAML 파서 불필요 — 단순 라인 파싱. 단, 두 형태를 지원해야 한다
+   (2026-07-15 실측: 설치된 44개 SKILL.md 전수 조사):
+   - 한 줄 값: `description: 텍스트` 또는 `description: "텍스트"` (플러그인 스킬 전부)
+   - 접기 블록: `description: >-` 뒤 들여쓰기된 여러 줄 → 공백으로 이어붙임 (개인 스킬 4개)
+   description은 원문 그대로 표시한다 (요약·가공 없음).
 4. 파일 감시(FSEvents) 없음. 패널 표시 시마다 재스캔으로 충분 (스킬 ~30개, 밀리초 단위).
 
 ## 에러 처리 — 관대하게, 숨기지 않는다
@@ -69,6 +73,8 @@ Claude 데스크톱 앱이 최전면에 오면 플로팅 패널로 설치된 Cla
 - `installed_plugins.json` 없음/파싱 실패 → 개인 스킬만 표시, 앱은 정상 동작.
 - `~/.claude/skills/` 없음 → 빈 상태 문구.
 - 플러그인 `installPath`에 `skills/` 폴더 없음 → 해당 플러그인 카테고리 생략.
+  (실측: 현재 설치 4개 중 skills 보유는 superpowers·frontend-design뿐.
+  code-review는 커맨드, security-guidance는 훅 형태라 치트시트에 안 나타나는 게 정상.)
 
 ## 테스트
 
