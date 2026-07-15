@@ -198,9 +198,38 @@ struct SkillStoreTests {
         let claudeDir = try makeFakeClaudeDirectory()
         let store = SkillStore(claudeDirectory: claudeDir)
 
-        #expect(store.categories.map(\.name) == ["내 스킬", "alpha"])
+        // alpha는 스킬이 하나뿐이라 "단일플러그인"으로 묶인다
+        #expect(store.categories.map(\.name) == ["내 스킬", "단일플러그인"])
         #expect(store.categories[0].skills.map(\.name) == ["my-skill"])
         #expect(store.categories[1].skills.map(\.name) == ["alpha-skill"])
+    }
+
+    @Test func 스킬_하나뿐인_플러그인은_단일플러그인으로_묶이고_여러개면_자기_카테고리() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        let fm = FileManager.default
+        for skillName in ["g-one", "g-two"] {
+            let dir = claudeDir.appendingPathComponent("cache/gamma/1.0/skills/\(skillName)", isDirectory: true)
+            try fm.createDirectory(at: dir, withIntermediateDirectories: true)
+            try "---\nname: \(skillName)\ndescription: 감마\n---\n"
+                .write(to: dir.appendingPathComponent("SKILL.md"), atomically: true, encoding: .utf8)
+        }
+        let json = """
+        {
+          "version": 2,
+          "plugins": {
+            "alpha@market": [ { "installPath": "\(claudeDir.path)/cache/alpha/1.0" } ],
+            "gamma@market": [ { "installPath": "\(claudeDir.path)/cache/gamma/1.0" } ]
+          }
+        }
+        """
+        try json.write(to: claudeDir.appendingPathComponent("plugins/installed_plugins.json"),
+                       atomically: true, encoding: .utf8)
+
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        // 다중 스킬 플러그인(gamma)은 자기 카테고리, 단일(alpha)은 맨 뒤 "단일플러그인"으로
+        #expect(store.categories.map(\.name) == ["내 스킬", "gamma", "단일플러그인"])
+        #expect(store.categories[2].skills.map(\.name) == ["alpha-skill"])
     }
 
     @Test func 아무것도_없으면_카테고리_빈_배열() {

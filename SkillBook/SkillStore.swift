@@ -7,6 +7,8 @@ final class SkillStore: ObservableObject {
     @Published private(set) var categories: [SkillCategory] = []
 
     static let personalCategoryName = "내 스킬"
+    /// 스킬이 하나뿐인 플러그인들을 모아두는 카테고리 (뎁스 낭비 방지). 항상 맨 뒤.
+    static let singlePluginCategoryName = "단일플러그인"
 
     private let claudeDirectory: URL
 
@@ -29,16 +31,22 @@ final class SkillStore: ObservableObject {
         }
 
         let jsonURL = claudeDirectory.appendingPathComponent("plugins/installed_plugins.json")
+        var singles: [Skill] = []
         if let data = try? Data(contentsOf: jsonURL) {
             for plugin in SkillScanner.pluginInstallPaths(fromJSON: data) {
                 let skills = SkillScanner.scanSkillsDirectory(
                     plugin.installPath.appendingPathComponent("skills", isDirectory: true),
                     categoryName: plugin.name
                 )
-                if !skills.isEmpty {
+                if skills.count == 1 {
+                    singles.append(contentsOf: skills)
+                } else if !skills.isEmpty {
                     result.append(SkillCategory(name: plugin.name, skills: skills))
                 }
             }
+        }
+        if !singles.isEmpty {
+            result.append(SkillCategory(name: Self.singlePluginCategoryName, skills: singles))
         }
 
         categories = applyTranslations(to: result)
