@@ -33,9 +33,22 @@
 		C3F98F643006A06F00430473 /* SkillBookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkillBookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AB00000000000000000000C1 /* Exceptions for "SkillBook" folder in "SkillBook" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C3F98F4C3006A06E00430473 /* SkillBook */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C3F98F4F3006A06E00430473 /* SkillBook */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AB00000000000000000000C1 /* Exceptions for "SkillBook" folder in "SkillBook" target */,
+			);
 			path = SkillBook;
 			sourceTree = "<group>";
 		};

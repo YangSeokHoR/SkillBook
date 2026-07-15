@@ -19,12 +19,18 @@ enum SkillScanner {
             let parsed = parseFrontmatter(text)
             skills.append(Skill(
                 id: skillFile.path,
-                name: parsed.name ?? entry.lastPathComponent,
-                description: parsed.description ?? "(설명 없음)",
+                name: nonBlank(parsed.name) ?? entry.lastPathComponent,
+                description: nonBlank(parsed.description) ?? "(설명 없음)",
                 categoryName: categoryName
             ))
         }
         return skills
+    }
+
+    /// 공백만 있거나 빈 문자열이면 nil로 취급 (폴백 트리거용)
+    private static func nonBlank(_ value: String?) -> String? {
+        guard let value, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        return value
     }
 
     /// installed_plugins.json에서 (플러그인 이름, 설치 경로) 목록을 읽는다.

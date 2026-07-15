@@ -112,6 +112,14 @@ struct SkillDirectoryScanTests {
         #expect(skills[0].description == "(설명 없음)")
     }
 
+    @Test func 빈_description_값은_설명없음으로_폴백() throws {
+        let base = try makeTempDirectory()
+        try writeSkill(in: base, folder: "blank-desc", contents: "---\nname: blank-desc\ndescription:\n---\n")
+        let skills = SkillScanner.scanSkillsDirectory(base, categoryName: "내 스킬")
+        #expect(skills.count == 1)
+        #expect(skills[0].description == "(설명 없음)")
+    }
+
     @Test func 없는_디렉토리는_빈_배열() {
         let missing = URL(fileURLWithPath: "/nonexistent/skills")
         #expect(SkillScanner.scanSkillsDirectory(missing, categoryName: "내 스킬").isEmpty)
