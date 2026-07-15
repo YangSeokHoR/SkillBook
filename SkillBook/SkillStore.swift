@@ -49,8 +49,7 @@ final class SkillStore: ObservableObject {
     private func applyTranslations(to categories: [SkillCategory]) -> [SkillCategory] {
         let url = claudeDirectory.appendingPathComponent("skillbook-ko.json")
         guard let data = try? Data(contentsOf: url),
-              let translations = try? JSONDecoder().decode([String: String].self, from: data),
-              !translations.isEmpty
+              let translations = try? JSONDecoder().decode([String: String].self, from: data)
         else { return categories }
 
         return categories.map { category in
