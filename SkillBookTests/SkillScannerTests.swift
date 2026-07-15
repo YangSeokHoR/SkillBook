@@ -207,4 +207,29 @@ struct SkillStoreTests {
         let store = SkillStore(claudeDirectory: URL(fileURLWithPath: "/nonexistent/.claude"))
         #expect(store.categories.isEmpty)
     }
+
+    @Test func 번역_파일이_있으면_설명만_교체한다() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        // my-skill만 번역이 있고 alpha-skill은 없음 → 있는 것만 교체, 없는 건 원문 유지
+        try #"{ "my-skill": "번역된 설명" }"#
+            .write(to: claudeDir.appendingPathComponent("skillbook-ko.json"),
+                   atomically: true, encoding: .utf8)
+
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        #expect(store.categories[0].skills[0].description == "번역된 설명")
+        #expect(store.categories[1].skills[0].description == "알파")
+        // 이름·카테고리는 그대로
+        #expect(store.categories[0].skills[0].name == "my-skill")
+    }
+
+    @Test func 깨진_번역_파일은_무시하고_원문_유지() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        try "not json".write(to: claudeDir.appendingPathComponent("skillbook-ko.json"),
+                             atomically: true, encoding: .utf8)
+
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        #expect(store.categories[0].skills[0].description == "내 것")
+    }
 }
