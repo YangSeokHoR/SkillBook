@@ -41,6 +41,24 @@ final class SkillStore: ObservableObject {
             }
         }
 
-        categories = result
+        categories = applyTranslations(to: result)
+    }
+
+    /// 번역 오버라이드 적용. `<claudeDirectory>/skillbook-ko.json`(스킬 이름 → 한국어 설명)이
+    /// 있으면 매칭되는 스킬의 설명만 교체한다. 파일이 없거나 깨졌으면 원문 그대로.
+    private func applyTranslations(to categories: [SkillCategory]) -> [SkillCategory] {
+        let url = claudeDirectory.appendingPathComponent("skillbook-ko.json")
+        guard let data = try? Data(contentsOf: url),
+              let translations = try? JSONDecoder().decode([String: String].self, from: data),
+              !translations.isEmpty
+        else { return categories }
+
+        return categories.map { category in
+            SkillCategory(name: category.name, skills: category.skills.map { skill in
+                guard let translated = translations[skill.name] else { return skill }
+                return Skill(id: skill.id, name: skill.name,
+                             description: translated, categoryName: skill.categoryName)
+            })
+        }
     }
 }
