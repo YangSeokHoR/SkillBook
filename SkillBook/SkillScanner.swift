@@ -6,7 +6,7 @@ enum SkillScanner {
 
     /// 디렉토리의 하위 폴더들에서 SKILL.md를 찾아 파싱한다. 폴더 이름순 정렬.
     /// SKILL.md가 없거나 읽을 수 없는 폴더는 조용히 건너뛴다 (관대한 에러 처리).
-    static func scanSkillsDirectory(_ directory: URL, categoryName: String) -> [Skill] {
+    static func scanSkillsDirectory(_ directory: URL) -> [Skill] {
         let fm = FileManager.default
         guard let entries = try? fm.contentsOfDirectory(
             at: directory, includingPropertiesForKeys: nil, options: [.skipsHiddenFiles]
@@ -20,8 +20,7 @@ enum SkillScanner {
             skills.append(Skill(
                 id: skillFile.path,
                 name: nonBlank(parsed.name) ?? entry.lastPathComponent,
-                description: nonBlank(parsed.description) ?? "(설명 없음)",
-                categoryName: categoryName
+                description: nonBlank(parsed.description) ?? "(설명 없음)"
             ))
         }
         return skills

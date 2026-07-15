@@ -23,8 +23,7 @@ final class SkillStore: ObservableObject {
         var result: [SkillCategory] = []
 
         let personal = SkillScanner.scanSkillsDirectory(
-            claudeDirectory.appendingPathComponent("skills", isDirectory: true),
-            categoryName: Self.personalCategoryName
+            claudeDirectory.appendingPathComponent("skills", isDirectory: true)
         )
         if !personal.isEmpty {
             result.append(SkillCategory(name: Self.personalCategoryName, skills: personal))
@@ -35,8 +34,7 @@ final class SkillStore: ObservableObject {
         if let data = try? Data(contentsOf: jsonURL) {
             for plugin in SkillScanner.pluginInstallPaths(fromJSON: data) {
                 let skills = SkillScanner.scanSkillsDirectory(
-                    plugin.installPath.appendingPathComponent("skills", isDirectory: true),
-                    categoryName: plugin.name
+                    plugin.installPath.appendingPathComponent("skills", isDirectory: true)
                 )
                 if skills.count == 1 {
                     singles.append(contentsOf: skills)
@@ -63,8 +61,7 @@ final class SkillStore: ObservableObject {
         return categories.map { category in
             SkillCategory(name: category.name, skills: category.skills.map { skill in
                 guard let translated = translations[skill.name] else { return skill }
-                return Skill(id: skill.id, name: skill.name,
-                             description: translated, categoryName: skill.categoryName)
+                return Skill(id: skill.id, name: skill.name, description: translated)
             })
         }
     }
