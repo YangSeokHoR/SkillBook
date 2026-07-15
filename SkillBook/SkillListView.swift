@@ -104,6 +104,9 @@ struct SkillListView: View {
                         withAnimation(.easeOut(duration: 0.18)) {
                             if expandedCategories.contains(category.name) {
                                 expandedCategories.remove(category.name)
+                                // 카테고리를 접으면 그 안 스킬의 펼침 상태도 비운다 —
+                                // 안 그러면 hasExpanded가 true로 남아 패널 높이가 실제 콘텐츠보다 커진다.
+                                for skill in category.skills { expandedSkillIDs.remove(skill.id) }
                             } else {
                                 expandedCategories.insert(category.name)
                             }
