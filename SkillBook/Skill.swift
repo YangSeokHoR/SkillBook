@@ -6,8 +6,6 @@ struct Skill: Identifiable, Equatable {
     let id: String
     let name: String
     let description: String
-    /// 소속 카테고리 (내 스킬 / 플러그인명)
-    let categoryName: String
 
     /// 확정 발동용 슬래시 호출 텍스트. 예: "/git-flow"
     var invocation: String { "/\(name)" }

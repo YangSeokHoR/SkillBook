@@ -86,10 +86,9 @@ struct SkillDirectoryScanTests {
         try writeSkill(in: base, folder: "b-skill", contents: "---\nname: b-skill\ndescription: 비\n---\n")
         try writeSkill(in: base, folder: "a-skill", contents: "---\nname: a-skill\ndescription: 에이\n---\n")
 
-        let skills = SkillScanner.scanSkillsDirectory(base, categoryName: "내 스킬")
+        let skills = SkillScanner.scanSkillsDirectory(base)
 
         #expect(skills.map(\.name) == ["a-skill", "b-skill"])
-        #expect(skills.allSatisfy { $0.categoryName == "내 스킬" })
         #expect(skills[0].invocation == "/a-skill")
     }
 
@@ -98,7 +97,7 @@ struct SkillDirectoryScanTests {
         try writeSkill(in: base, folder: "empty-folder", contents: nil)
         try writeSkill(in: base, folder: "real", contents: "---\nname: real\ndescription: 진짜\n---\n")
 
-        let skills = SkillScanner.scanSkillsDirectory(base, categoryName: "내 스킬")
+        let skills = SkillScanner.scanSkillsDirectory(base)
         #expect(skills.map(\.name) == ["real"])
     }
 
@@ -106,7 +105,7 @@ struct SkillDirectoryScanTests {
         let base = try makeTempDirectory()
         try writeSkill(in: base, folder: "no-front", contents: "# frontmatter 없음\n")
 
-        let skills = SkillScanner.scanSkillsDirectory(base, categoryName: "내 스킬")
+        let skills = SkillScanner.scanSkillsDirectory(base)
         #expect(skills.count == 1)
         #expect(skills[0].name == "no-front")
         #expect(skills[0].description == "(설명 없음)")
@@ -115,14 +114,14 @@ struct SkillDirectoryScanTests {
     @Test func 빈_description_값은_설명없음으로_폴백() throws {
         let base = try makeTempDirectory()
         try writeSkill(in: base, folder: "blank-desc", contents: "---\nname: blank-desc\ndescription:\n---\n")
-        let skills = SkillScanner.scanSkillsDirectory(base, categoryName: "내 스킬")
+        let skills = SkillScanner.scanSkillsDirectory(base)
         #expect(skills.count == 1)
         #expect(skills[0].description == "(설명 없음)")
     }
 
     @Test func 없는_디렉토리는_빈_배열() {
         let missing = URL(fileURLWithPath: "/nonexistent/skills")
-        #expect(SkillScanner.scanSkillsDirectory(missing, categoryName: "내 스킬").isEmpty)
+        #expect(SkillScanner.scanSkillsDirectory(missing).isEmpty)
     }
 }
 
