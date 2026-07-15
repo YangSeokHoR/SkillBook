@@ -146,3 +146,57 @@ struct PluginInstallPathTests {
         #expect(SkillScanner.pluginInstallPaths(fromJSON: Data("not json".utf8)).isEmpty)
     }
 }
+
+@MainActor
+struct SkillStoreTests {
+
+    /// 가짜 ~/.claude 구조를 임시 폴더에 만든다.
+    private func makeFakeClaudeDirectory() throws -> URL {
+        let base = FileManager.default.temporaryDirectory
+            .appendingPathComponent("SkillBookStoreTests-\(UUID().uuidString)", isDirectory: true)
+        let fm = FileManager.default
+
+        // 개인 스킬 1개
+        let personal = base.appendingPathComponent("skills/my-skill", isDirectory: true)
+        try fm.createDirectory(at: personal, withIntermediateDirectories: true)
+        try "---\nname: my-skill\ndescription: 내 것\n---\n"
+            .write(to: personal.appendingPathComponent("SKILL.md"), atomically: true, encoding: .utf8)
+
+        // 플러그인: alpha는 스킬 1개, beta는 skills 폴더 없음(카테고리 생략돼야 함)
+        let alphaSkill = base.appendingPathComponent("cache/alpha/1.0/skills/alpha-skill", isDirectory: true)
+        try fm.createDirectory(at: alphaSkill, withIntermediateDirectories: true)
+        try "---\nname: alpha-skill\ndescription: 알파\n---\n"
+            .write(to: alphaSkill.appendingPathComponent("SKILL.md"), atomically: true, encoding: .utf8)
+        let betaDir = base.appendingPathComponent("cache/beta/1.0", isDirectory: true)
+        try fm.createDirectory(at: betaDir, withIntermediateDirectories: true)
+
+        let pluginsDir = base.appendingPathComponent("plugins", isDirectory: true)
+        try fm.createDirectory(at: pluginsDir, withIntermediateDirectories: true)
+        let json = """
+        {
+          "version": 2,
+          "plugins": {
+            "alpha@market": [ { "installPath": "\(base.path)/cache/alpha/1.0" } ],
+            "beta@market": [ { "installPath": "\(base.path)/cache/beta/1.0" } ]
+          }
+        }
+        """
+        try json.write(to: pluginsDir.appendingPathComponent("installed_plugins.json"),
+                       atomically: true, encoding: .utf8)
+        return base
+    }
+
+    @Test func 내스킬이_먼저_그다음_플러그인_빈_플러그인은_생략() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        #expect(store.categories.map(\.name) == ["내 스킬", "alpha"])
+        #expect(store.categories[0].skills.map(\.name) == ["my-skill"])
+        #expect(store.categories[1].skills.map(\.name) == ["alpha-skill"])
+    }
+
+    @Test func 아무것도_없으면_카테고리_빈_배열() {
+        let store = SkillStore(claudeDirectory: URL(fileURLWithPath: "/nonexistent/.claude"))
+        #expect(store.categories.isEmpty)
+    }
+}
