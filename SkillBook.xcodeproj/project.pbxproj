@@ -23,15 +23,32 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXBuildFile section */
+		AB00000000000000000000B3 /* MenubKit in Frameworks */ = {isa = PBXBuildFile; productRef = AB00000000000000000000B2 /* MenubKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		C3F98F4D3006A06E00430473 /* SkillBook.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SkillBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3F98F5A3006A06F00430473 /* SkillBookTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkillBookTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3F98F643006A06F00430473 /* SkillBookUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SkillBookUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AB00000000000000000000C1 /* Exceptions for "SkillBook" folder in "SkillBook" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C3F98F4C3006A06E00430473 /* SkillBook */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C3F98F4F3006A06E00430473 /* SkillBook */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AB00000000000000000000C1 /* Exceptions for "SkillBook" folder in "SkillBook" target */,
+			);
 			path = SkillBook;
 			sourceTree = "<group>";
 		};
@@ -52,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB00000000000000000000B3 /* MenubKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +130,7 @@
 			);
 			name = SkillBook;
 			packageProductDependencies = (
+				AB00000000000000000000B2 /* MenubKit */,
 			);
 			productName = SkillBook;
 			productReference = C3F98F4D3006A06E00430473 /* SkillBook.app */;
@@ -199,6 +218,9 @@
 			productRefGroup = C3F98F4E3006A06E00430473 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
+			packageReferences = (
+				AB00000000000000000000B1 /* XCLocalSwiftPackageReference "../Menub/MenubKit" */,
+			);
 			targets = (
 				C3F98F4C3006A06E00430473 /* SkillBook */,
 				C3F98F593006A06F00430473 /* SkillBookTests */,
@@ -267,6 +289,20 @@
 			targetProxy = C3F98F653006A06F00430473 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AB00000000000000000000B1 /* XCLocalSwiftPackageReference "../Menub/MenubKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../Menub/MenubKit";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AB00000000000000000000B2 /* MenubKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MenubKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		C3F98F6C3006A06F00430473 /* Debug */ = {
@@ -398,7 +434,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RR3J2G3TKU;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = SkillBook/Info.plist;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -430,7 +467,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RR3J2G3TKU;
-				ENABLE_APP_SANDBOX = YES;
+				ENABLE_APP_SANDBOX = NO;
+				INFOPLIST_FILE = SkillBook/Info.plist;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
