@@ -71,6 +71,7 @@ xcodebuild test -project SkillBook.xcodeproj -scheme SkillBook \
 ## 문서
 
 - 설계 스펙: [docs/superpowers/specs/2026-07-15-skillbook-design.md](docs/superpowers/specs/2026-07-15-skillbook-design.md)
+- [CONVENTIONS.md](CONVENTIONS.md) — 커밋/이슈/브랜치/PR 규칙
 
 ---
 
