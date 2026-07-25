@@ -1,5 +1,16 @@
+# macOS
+.DS_Store
+
+# Xcode
 build/
 DerivedData/
 xcuserdata/
-.DS_Store
-.superpowers/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+
+# Swift
+.build/
+.swiftpm/
+*.profraw
