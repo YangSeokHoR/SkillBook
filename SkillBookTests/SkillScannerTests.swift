@@ -226,9 +226,9 @@ struct SkillStoreTests {
 
         let store = SkillStore(claudeDirectory: claudeDir)
 
-        // 다중 스킬 플러그인(gamma)은 자기 카테고리, 단일(alpha)은 맨 뒤 "단일플러그인"으로
-        #expect(store.categories.map(\.name) == ["내 스킬", "gamma", "단일플러그인"])
-        #expect(store.categories[2].skills.map(\.name) == ["alpha-skill"])
+        // "단일플러그인"은 내 스킬 바로 다음, 다중 스킬 플러그인(gamma)은 그 뒤로
+        #expect(store.categories.map(\.name) == ["내 스킬", "단일플러그인", "gamma"])
+        #expect(store.categories[1].skills.map(\.name) == ["alpha-skill"])
     }
 
     @Test func 아무것도_없으면_카테고리_빈_배열() {
