@@ -35,6 +35,12 @@ Claude 데스크톱 앱이 최전면에 오면 플로팅 패널이 자동으로 
 매핑이 있으면 해당 스킬의 설명만 한국어로 교체된다. 파일이 없거나 매핑에 없는
 스킬은 원문 폴백. 번역 파일 갱신은 Claude Code에게 "번역 파일 갱신해줘"로 요청.
 
+**그룹 선언**: `~/.claude/skillbook-groups.json`에 `{ "스킬이름": "카테고리이름" }`
+매핑이 있으면 그 개인 스킬은 "내 스킬" 대신 해당 카테고리로 간다. 플러그인이 아니라
+`~/.claude/skills/`로 통째로 설치되는 스킬 묶음(caveman 등)을 분리하기 위한 것 —
+SKILL.md에 출처 표시가 없어 추론할 수 없으므로 선언받는다. 선언된 그룹은 플러그인과
+같은 층위에서 알파벳순으로 정렬된다.
+
 ## 구조
 
 | 파일 | 역할 |
@@ -61,7 +67,7 @@ xcodebuild -project SkillBook.xcodeproj -scheme SkillBook \
 open build/Build/Products/Debug/SkillBook.app
 ```
 
-테스트 (Swift Testing, 17개):
+테스트 (Swift Testing, 19개):
 
 ```bash
 xcodebuild test -project SkillBook.xcodeproj -scheme SkillBook \

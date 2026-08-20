@@ -14,3 +14,7 @@ xcuserdata/
 .build/
 .swiftpm/
 *.profraw
+
+# 에이전트 작업 부산물
+.superpowers/
+*핸드오프.md

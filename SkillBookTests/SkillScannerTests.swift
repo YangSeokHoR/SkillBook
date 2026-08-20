@@ -236,6 +236,42 @@ struct SkillStoreTests {
         #expect(store.categories.isEmpty)
     }
 
+    /// 개인 스킬 폴더에 스킬 하나를 더 심는다.
+    private func addPersonalSkill(_ name: String, in claudeDir: URL) throws {
+        let dir = claudeDir.appendingPathComponent("skills/\(name)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        try "---\nname: \(name)\ndescription: 설명\n---\n"
+            .write(to: dir.appendingPathComponent("SKILL.md"), atomically: true, encoding: .utf8)
+    }
+
+    @Test func 그룹_파일이_있으면_개인_스킬이_선언된_카테고리로_분리된다() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        try addPersonalSkill("borrowed-a", in: claudeDir)
+        try addPersonalSkill("borrowed-b", in: claudeDir)
+        try #"{ "borrowed-a": "남의묶음", "borrowed-b": "남의묶음" }"#
+            .write(to: claudeDir.appendingPathComponent("skillbook-groups.json"),
+                   atomically: true, encoding: .utf8)
+
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        // 선언 안 된 my-skill은 내 스킬에 남고, 선언된 둘은 자기 카테고리로
+        #expect(store.categories.map(\.name) == ["내 스킬", "단일플러그인", "남의묶음"])
+        #expect(store.categories.map { $0.skills.map(\.name) }
+                == [["my-skill"], ["alpha-skill"], ["borrowed-a", "borrowed-b"]])
+    }
+
+    @Test func 깨진_그룹_파일은_무시하고_전부_내_스킬() throws {
+        let claudeDir = try makeFakeClaudeDirectory()
+        try addPersonalSkill("borrowed-a", in: claudeDir)
+        try "not json".write(to: claudeDir.appendingPathComponent("skillbook-groups.json"),
+                             atomically: true, encoding: .utf8)
+
+        let store = SkillStore(claudeDirectory: claudeDir)
+
+        #expect(store.categories.first?.name == "내 스킬")
+        #expect(store.categories.first?.skills.map(\.name) == ["borrowed-a", "my-skill"])
+    }
+
     @Test func 번역_파일이_있으면_설명만_교체한다() throws {
         let claudeDir = try makeFakeClaudeDirectory()
         // my-skill만 번역이 있고 alpha-skill은 없음 → 있는 것만 교체, 없는 건 원문 유지

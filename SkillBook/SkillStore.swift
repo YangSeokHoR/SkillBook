@@ -25,9 +25,15 @@ final class SkillStore: ObservableObject {
         let personal = SkillScanner.scanSkillsDirectory(
             claudeDirectory.appendingPathComponent("skills", isDirectory: true)
         )
-        if !personal.isEmpty {
-            result.append(SkillCategory(name: Self.personalCategoryName, skills: personal))
+        let groups = declaredGroups()
+        let mine = personal.filter { groups[$0.name] == nil }
+        if !mine.isEmpty {
+            result.append(SkillCategory(name: Self.personalCategoryName, skills: mine))
         }
+        // 선언된 그룹은 플러그인과 같은 층위로 취급해 뒤에서 알파벳순으로 함께 정렬한다.
+        var declared: [SkillCategory] = Dictionary(grouping: personal.filter { groups[$0.name] != nil },
+                                                   by: { groups[$0.name]! })
+            .map { SkillCategory(name: $0.key, skills: $0.value) }
 
         let jsonURL = claudeDirectory.appendingPathComponent("plugins/installed_plugins.json")
         var singles: [Skill] = []
@@ -47,9 +53,23 @@ final class SkillStore: ObservableObject {
         if !singles.isEmpty {
             result.append(SkillCategory(name: Self.singlePluginCategoryName, skills: singles))
         }
-        result.append(contentsOf: multiSkillPlugins)
+        declared.append(contentsOf: multiSkillPlugins)
+        result.append(contentsOf: declared.sorted { $0.name < $1.name })
 
         categories = applyTranslations(to: result)
+    }
+
+    /// 그룹 선언 읽기. `<claudeDirectory>/skillbook-groups.json`(스킬 이름 → 카테고리 이름)에
+    /// 적힌 개인 스킬은 "내 스킬" 대신 그 카테고리로 간다. 남이 만든 스킬 묶음이 개인 폴더에
+    /// 통째로 설치되는 경우(플러그인이 아니라 `~/.claude/skills/`로 들어오는 배포본)를 위한 것 —
+    /// SKILL.md에는 출처를 알 수 있는 표시가 없어서 추론할 수 없고, 선언받는 수밖에 없다.
+    /// 파일이 없거나 깨졌으면 전부 "내 스킬"에 남는다.
+    private func declaredGroups() -> [String: String] {
+        let url = claudeDirectory.appendingPathComponent("skillbook-groups.json")
+        guard let data = try? Data(contentsOf: url),
+              let groups = try? JSONDecoder().decode([String: String].self, from: data)
+        else { return [:] }
+        return groups
     }
 
     /// 번역 오버라이드 적용. `<claudeDirectory>/skillbook-ko.json`(스킬 이름 → 한국어 설명)이
