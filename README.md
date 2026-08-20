@@ -67,7 +67,7 @@ xcodebuild -project SkillBook.xcodeproj -scheme SkillBook \
 open build/Build/Products/Debug/SkillBook.app
 ```
 
-테스트 (Swift Testing, 17개):
+테스트 (Swift Testing, 19개):
 
 ```bash
 xcodebuild test -project SkillBook.xcodeproj -scheme SkillBook \
